@@ -21,7 +21,7 @@ for i in range(6):
     val = input("Wordle response (b y g): ")
 
     if val == 'ggggg':
-        print("You did it. You successfully at a stupid word game.")
+        print("You did it. You successfully cheated at a stupid word game.")
         break
 
     # start with greens/blacks
