@@ -1,15 +1,17 @@
 file = open('enwiki-20190320-words-frequency.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
-frequency_list = [w for w in frequency_list if len(w[0]) == 5]
+frequency_list = {v[0]: int(v[1]) for v in frequency_list if len(v[0]) == 5 and "'" not in v[0]}
 
-possible_words = [f[0] for f in frequency_list]
+possible_words = frequency_list.keys()
 
-unknown_ixs = list(range(5))
+word = list('-----')
 
 for i in range(6):
-    # Make sure the first two guesses use 5 distinct letters
-    if i < 2:
+
+    if i == 0:
+        guess = 'resin'
+    elif i == 1:
         for pw in possible_words:
             guess = pw
             if len(set(guess)) == 5:
@@ -17,28 +19,33 @@ for i in range(6):
     else:
         guess = possible_words[0]
 
+    if i > 0:
+        freqs = [frequency_list[w] for w in possible_words[0:5]]
+        freqs = [f / sum(freqs) for f in freqs]
+        fout = [f"{possible_words[i]} ({freqs[i]:.2f})" for i in range(5)]
+        print(f'Top 5: {{{", ".join(fout)}}}')
     print(f'Guess: {guess} ({len(possible_words)} possible)')
     val = input("Wordle response (b y g): ")
 
-    if val == 'ggggg':
-        print("You did it. You successfully at a stupid word game.")
-        break
-
     # start with greens/blacks
-    for j1, v1 in enumerate(val):
-        if v1 == 'g':
-            possible_words = [w for w in possible_words if w[j1] == guess[j1]]
-            if j1 in unknown_ixs:
-                unknown_ixs.remove(j1)
-        elif v1 == 'b':
-            possible_words = [w for w in possible_words if guess[j1] not in w]
+    for j, ryg_val in enumerate(val):
 
-    # Handle yellows
-    for j2, v2 in enumerate(val):
-        if v2 == 'y':
-            possible_words = [w for w in possible_words if w[j2] != guess[j2]]
-            # possible_words = [w for w in possible_words if any(w[k] == guess[j2] for k in unknown_ixs)]
-            possible_words = [w for w in possible_words if guess[j2] in w]
+        if ryg_val == 'g':
+            possible_words = [w for w in possible_words if w[j] == guess[j]]
+            if word[j] == '-':
+                word[j] = guess[j]
+        elif ryg_val == 'y':
+            possible_words = [w for w in possible_words if w[j] != guess[j] and guess[j] in w]
+        elif ryg_val == 'b':
+            if guess[j] in word:
+                possible_words = [w for w in possible_words if w[j] != guess[j] and guess[j] in w]
+            else:  # Dane's edge case
+                possible_words = [w for w in possible_words if guess[j] not in w]
+
+    if val == 'ggggg':
+        print("You did it. You successfully cheated at a stupid word game.")
+        print("".join(word))
+        break
 
     if len(possible_words) == 0:
         print("There are no possible words left. The bot has failed :(")
