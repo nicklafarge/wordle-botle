@@ -28,7 +28,8 @@ for i in range(6):
     for j1, v1 in enumerate(val):
         if v1 == 'g':
             possible_words = [w for w in possible_words if w[j1] == guess[j1]]
-            unknown_ixs.remove(j1)
+            if j1 in unknown_ixs:
+                unknown_ixs.remove(j1)
         elif v1 == 'b':
             possible_words = [w for w in possible_words if guess[j1] not in w]
 
@@ -36,4 +37,9 @@ for i in range(6):
     for j2, v2 in enumerate(val):
         if v2 == 'y':
             possible_words = [w for w in possible_words if w[j2] != guess[j2]]
-            possible_words = [w for w in possible_words if any(w[k] == guess[j2] for k in unknown_ixs)]
+            # possible_words = [w for w in possible_words if any(w[k] == guess[j2] for k in unknown_ixs)]
+            possible_words = [w for w in possible_words if guess[j2] in w]
+
+    if len(possible_words) == 0:
+        print("There are no possible words left. The bot has failed :(")
+        break
