@@ -1,4 +1,4 @@
-file = open('enwiki-20190320-words-frequency.txt', 'r')
+file = open('reduced-words.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
 frequency_list = [w for w in frequency_list if len(w[0]) == 5]
