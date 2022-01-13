@@ -27,9 +27,7 @@ for i in range(6):
     print(f'Guess: {guess} ({len(possible_words)} possible)')
     val = input("Wordle response (b y g): ")
 
-    # start with greens/blacks
     for j, ryg_val in enumerate(val):
-
         if ryg_val == 'g':
             possible_words = [w for w in possible_words if w[j] == guess[j]]
             if word[j] == '-':
@@ -44,7 +42,7 @@ for i in range(6):
 
     if val == 'ggggg':
         print("You did it. You successfully cheated at a stupid word game.")
-        print("".join(word))
+        print(f'The word is: {"".join(word)}')
         break
 
     if len(possible_words) == 0:
