@@ -35,9 +35,9 @@ for i in range(6):
         elif ryg_val == 'y':
             possible_words = [w for w in possible_words if w[j] != guess[j] and guess[j] in w]
         elif ryg_val == 'b':
-            if guess[j] in word:
+            if guess[j] in word: # Dane's edge case
                 possible_words = [w for w in possible_words if w[j] != guess[j] and guess[j] in w]
-            else:  # Dane's edge case
+            else:
                 possible_words = [w for w in possible_words if guess[j] not in w]
 
     if val == 'ggggg':
