@@ -1,20 +1,24 @@
-file = open('reduced-words.txt', 'r')
+import csv
+
+file = open('wikipedia-frequencies5.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
-frequency_list = {v[0]: int(v[1]) for v in frequency_list if len(v[0]) == 5 and "'" not in v[0]}
-# TODO remove accented words (can check with word.encode("ascii"))
-# TODO check with actual dictionary to filter out names
-# TODO remove words from previous days? List here: https://screenrant.com/wordle-answers-updated-word-puzzle-guide/
+frequency_dict = {v[0]: int(v[1]) for v in frequency_list if len(v[0]) == 5 and "'" not in v[0]}
 
-possible_words = frequency_list.keys()
+with open('scrabble5.csv', newline='') as f:
+    reader = csv.reader(f)
+    scrabble_words = list(reader)[0]
+
+possible_words = sorted(scrabble_words,
+                        key=lambda w: 0 if w not in frequency_dict else frequency_dict[w],
+                        reverse=True)
 
 word = list('-----')
-# "resin house shoes"
-for i in range(6):
 
+for i in range(6):
     if i > 0:
         guess_options = possible_words
-        freqs = [frequency_list[w] for w in possible_words[0:5]]
+        freqs = [frequency_dict[w] for w in possible_words[0:5]]
         freqs = [f / sum(freqs) for f in freqs]
         prompt = [f"{i + 1}. {guess_options[i]} ({freqs[i]:.2f})" for i in range(min(5, len(guess_options)))]
     else:
