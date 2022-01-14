@@ -1,8 +1,10 @@
-file = open('enwiki-20190320-words-frequency.txt', 'r')
+file = open('reduced-words.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
 frequency_list = {v[0]: int(v[1]) for v in frequency_list if len(v[0]) == 5 and "'" not in v[0]}
 # TODO remove accented words (can check with word.encode("ascii"))
+# TODO check with actual dictionary to filter out names
+# TODO remove words from previous days? List here: https://screenrant.com/wordle-answers-updated-word-puzzle-guide/
 
 possible_words = frequency_list.keys()
 
