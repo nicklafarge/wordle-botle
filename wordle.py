@@ -3,15 +3,21 @@ import csv
 file = open('wikipedia-frequencies5.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
-frequency_dict = {v[0]: int(v[1]) for v in frequency_list if len(v[0]) == 5 and "'" not in v[0]}
+frequency_dict = {v[0]: int(v[1]) for v in frequency_list}
 
-with open('scrabble5.csv', newline='') as f:
+with open('wordlewords.csv', newline='') as f:
     reader = csv.reader(f)
     scrabble_words = list(reader)[0]
 
-possible_words = sorted(scrabble_words,
-                        key=lambda w: 0 if w not in frequency_dict else frequency_dict[w],
-                        reverse=True)
+possible_words = scrabble_words
+# possible_words = sorted(scrabble_words,
+#                         key=lambda w: 0 if w not in frequency_dict else frequency_dict[w],
+#                         reverse=True)
+#
+# textfile = open("wordlewords.csv", "w")
+# for w in possible_words:
+#     textfile.write(w + ",")
+# textfile.close()
 
 word = list('-----')
 
