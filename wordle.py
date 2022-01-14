@@ -2,6 +2,7 @@ file = open('enwiki-20190320-words-frequency.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
 frequency_list = {v[0]: int(v[1]) for v in frequency_list if len(v[0]) == 5 and "'" not in v[0]}
+# TODO remove accented words (can check with word.encode("ascii"))
 
 possible_words = frequency_list.keys()
 
@@ -9,21 +10,25 @@ word = list('-----')
 # "resin house shoes"
 for i in range(6):
 
-    if i == 0:
-        guess = 'resin'
-    elif i == 1:
-        for pw in possible_words:
-            guess = pw
-            if len(set(guess)) == 5:
-                break
-    else:
-        guess = possible_words[0]
-
     if i > 0:
+        guess_options = possible_words
         freqs = [frequency_list[w] for w in possible_words[0:5]]
         freqs = [f / sum(freqs) for f in freqs]
-        fout = [f"{possible_words[i]} ({freqs[i]:.2f})" for i in range(min(5, len(possible_words)))]
-        print(f'Top 5: {{{", ".join(fout)}}}')
+        prompt = [f"{i + 1}. {guess_options[i]} ({freqs[i]:.2f})" for i in range(min(5, len(guess_options)))]
+    else:
+        guess_options = ["adieu", "react", "anime", "tears", "alone"]
+        prompt = [f"{i + 1}. {guess_options[i]}" for i in range(min(5, len(guess_options)))]
+
+    print(f'Options: {{{", ".join(prompt)}}}')
+    while True:
+        selection = input("Select Word (1-5): ")
+        if selection.isdigit() and int(selection) in list(range(1, 6)):
+            guess = guess_options[int(selection)-1]
+            break
+        else:
+            print(f"Please select a number 1-5")
+
+
     print(f'Guess: {guess} ({len(possible_words)} possible)')
     val = input("Wordle response (b y g): ")
 
