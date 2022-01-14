@@ -1,6 +1,7 @@
 import csv
 
-file = open('wikipedia-frequencies5.txt', 'r')
+# file = open('wikipedia-frequencies5.txt', 'r')
+file = open('unigram_5.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
 frequency_dict = {v[0]: int(v[1]) for v in frequency_list}
@@ -24,7 +25,7 @@ word = list('-----')
 for i in range(6):
     if i > 0:
         guess_options = possible_words
-        freqs = [frequency_dict[w] for w in possible_words[0:5]]
+        freqs = [frequency_dict.get(w, 0) for w in possible_words[0:5]]
         freqs = [f / sum(freqs) for f in freqs]
         prompt = [f"{i + 1}. {guess_options[i]} ({freqs[i]:.2f})" for i in range(min(5, len(guess_options)))]
     else:
