@@ -19,11 +19,19 @@ for i in range(6):
         guess_options = ["adieu", "react", "anime", "tears", "alone"]
         prompt = [f"{i + 1}. {guess_options[i]}" for i in range(min(5, len(guess_options)))]
 
-    print(f'Options: {{{", ".join(prompt)}}}')
+    print(f'Options: {{{", ".join(prompt)}}}.')
     while True:
-        selection = input("Select Word (1-5): ")
+        selection = input("Select Word (1-5) [6. Input custom]: ")
         if selection.isdigit() and int(selection) in list(range(1, 6)):
             guess = guess_options[int(selection)-1]
+            break
+        elif selection.isdigit() and int(selection) == 6:
+            while True:
+                guess = input("You think you're so smart? Input your 5-letter word: ")
+                if len(guess) == 5:
+                    break
+                else:
+                    print("Five letters genius....")
             break
         else:
             print(f"Please select a number 1-5")
