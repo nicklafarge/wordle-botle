@@ -1,10 +1,13 @@
 import csv
+import itertools
 
 # file = open('wikipedia-frequencies5.txt', 'r')
 file = open('unigram_5.txt', 'r')
 lines = file.readlines()
 frequency_list = [l.split(' ') for l in lines]
 frequency_dict = {v[0]: int(v[1]) for v in frequency_list}
+
+most_common_letters = list('etainoshrdlum')
 
 with open('wordlewords.csv', newline='') as f:
     reader = csv.reader(f)
@@ -23,11 +26,23 @@ possible_words = scrabble_words
 word = list('-----')
 
 for i in range(6):
-    if i > 0:
+    if i > 1:
         guess_options = possible_words
         freqs = [frequency_dict.get(w, 0) for w in possible_words[0:5]]
         freqs = [f / sum(freqs) for f in freqs]
         prompt = [f"{i + 1}. {guess_options[i]} ({freqs[i]:.2f})" for i in range(min(5, len(guess_options)))]
+    elif i == 1:
+        guess_options = []
+        for five_set in itertools.combinations(most_common_letters, 5):
+            ay = 1
+            for x in itertools.permutations(five_set, 5):
+                possible_word = "".join(x)
+                if possible_word in possible_words:
+                    guess_options.append(possible_word)
+                    break
+
+        guess_options = sorted(guess_options, key=lambda g: frequency_dict.get(g, 0), reverse=True)
+        prompt = [f"{i + 1}. {guess_options[i]}" for i in range(min(5, len(guess_options)))]
     else:
         guess_options = ["adieu", "react", "anime", "tears", "alone"]
         prompt = [f"{i + 1}. {guess_options[i]}" for i in range(min(5, len(guess_options)))]
@@ -49,7 +64,6 @@ for i in range(6):
         else:
             print(f"Please select a number 1-5")
 
-
     print(f'Guess: {guess} ({len(possible_words)} possible)')
     val = input("Wordle response (b y g): ")
 
@@ -63,6 +77,11 @@ for i in range(6):
     for j, ryg_val in enumerate(val):
         if ryg_val != 'b':
             continue
+
+        if i == 0:
+            if guess[j] in most_common_letters:
+                most_common_letters.remove(guess[j])
+
 
         if guess[j] in word: # Dane's edge case
             possible_words = [w for w in possible_words if w[j] != guess[j] and guess[j] in w]
