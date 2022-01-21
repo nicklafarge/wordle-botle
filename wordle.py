@@ -13,15 +13,12 @@ with open('wordlewords.csv', newline='') as f:
     reader = csv.reader(f)
     scrabble_words = list(reader)[0]
 
-possible_words = scrabble_words
-# possible_words = sorted(scrabble_words,
-#                         key=lambda w: 0 if w not in frequency_dict else frequency_dict[w],
-#                         reverse=True)
-#
-# textfile = open("wordlewords.csv", "w")
-# for w in possible_words:
-#     textfile.write(w + ",")
-# textfile.close()
+
+possible_words = sorted(scrabble_words,
+                        key=lambda w: 0 if w not in frequency_dict else frequency_dict[w],
+                        reverse=True)
+
+user_select = False
 
 word = list('-----')
 
@@ -48,7 +45,7 @@ for i in range(6):
         prompt = [f"{i + 1}. {guess_options[i]}" for i in range(min(5, len(guess_options)))]
 
     print(f'Options: {{{", ".join(prompt)}}}.')
-    while True:
+    while user_select and True:
         selection = input("Select Word (1-5) [6. Input custom]: ")
         if selection.isdigit() and int(selection) in list(range(1, 6)):
             guess = guess_options[int(selection)-1]
@@ -64,6 +61,8 @@ for i in range(6):
         else:
             print(f"Please select a number 1-5")
 
+    if not user_select:
+        guess = guess_options[0]
     print(f'Guess: {guess} ({len(possible_words)} possible)')
     val = input("Wordle response (b y g): ")
 
@@ -88,6 +87,7 @@ for i in range(6):
         else:
             possible_words = [w for w in possible_words if guess[j] not in w]
 
+    print()
     if val == 'ggggg':
         print("You did it. You successfully cheated at a stupid word game.")
         print(f'The word is: {"".join(word)}')
